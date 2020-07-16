@@ -111,7 +111,7 @@ public class LemmaExample implements Comparable<LemmaExample> {
     /**
      * Lemma to be produced by pre-lemmatizing with Front-Lemmatizer (Warning it is reversed)
      *
-     * @return
+     * @return produced lemma
      */
     public String getLemmaFront() {
         if (lemmaFrontCache == null) {
@@ -125,7 +125,7 @@ public class LemmaExample implements Comparable<LemmaExample> {
      * word to be lemmatized by standard Rear-Lemmatizer (it's beggining has been already modified by
      * Front-Lemmatizer)
      *
-     * @return
+     * @return lemmatized word
      */
     public String getWordRear() {
         if (wordRearCache == null) {
@@ -143,7 +143,7 @@ public class LemmaExample implements Comparable<LemmaExample> {
     /**
      * lemma to be produced by standard Rear-Lemmatizer from WordRear
      *
-     * @return
+     * @return lemma
      */
     public String getLemmaRear() {
         return lemma;
