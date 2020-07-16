@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id "net.nemerosa.versioning" version "2.12.0" apply true
 }
 
 repositories {
@@ -14,8 +15,12 @@ dependencies {
     testImplementation 'org.slf4j:slf4j-simple:1.7.25'
 }
 
+versioning {
+    branchEnv = [ 'CI_COMMIT_BRANCH', 'BRANCH_NAME' ]
+}
+
 group = 'eu.hlavki.text'
-version = '1.1-SNAPSHOT'
+version = versioning.info.tag ? versioning.info.tag : versioning.info.display
 sourceCompatibility = '1.8'
 
 publishing {
@@ -23,6 +28,12 @@ publishing {
         maven(MavenPublication) {
             from(components.java)
         }
+    }
+}
+
+tasks.withType(PublishToMavenRepository) {
+    onlyIf {
+        versioning.info.tag
     }
 }
 
