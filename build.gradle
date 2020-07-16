@@ -20,7 +20,7 @@ versioning {
     branchEnv = [ 'CI_COMMIT_BRANCH', 'BRANCH_NAME' ]
 }
 
-group = 'io.github.vlk32'
+group = 'eu.hlavki.text'
 version = versioning.info.tag && !versioning.info.dirty ? versioning.info.tag : versioning.info.display
 sourceCompatibility = '1.8'
 
@@ -61,7 +61,7 @@ publishing {
             pom {
                 name.set("jlemmagen")
                 description.set("Java implementation of open source lemmatizer based on (http://lemmatise.ijs.si/)")
-                url.set("https://github.com/vlk32/jlemmagen")
+                url.set("https://github.com/hlavki/jlemmagen")
                 licenses {
                     license {
                         name.set("Apache License 2.0")
@@ -74,16 +74,11 @@ publishing {
                         name.set("Michal Hlavac")
                         email.set("miso@hlavki.eu")
                     }
-                    developer {
-                        id.set("vlk32")
-                        name.set("Vladimir Kralik")
-                        email.set("vkralik@gmail.com")
-                    }
                 }
                 scm {
-                    connection.set("scm:git:https://github.com/vlk32/jlemmagen")
-                    developerConnection.set("scm:git:https://github.com/vlk32/jlemmagen")
-                    url.set("https://github.com/vlk32/jlemmagen")
+                    connection.set("scm:git:https://github.com/hlavki/jlemmagen")
+                    developerConnection.set("scm:git:https://github.com/hlavki/jlemmagen")
+                    url.set("https://github.com/hlavki/jlemmagen")
                 }
 
             }
