@@ -21,26 +21,8 @@ versioning {
 }
 
 group = 'io.github.vlk32'
-version = versioning.info.tag ? versioning.info.tag : versioning.info.display
+version = versioning.info.tag && !versioning.info.dirty ? versioning.info.tag : versioning.info.display
 sourceCompatibility = '1.8'
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
-    }
-}
-
-tasks.withType(PublishToMavenRepository) {
-    onlyIf {
-        versioning.info.tag
-    }
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
@@ -55,5 +37,72 @@ task javadocJar(type: Jar) {
 artifacts {
     archives sourcesJar
     archives javadocJar
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "MavenCentral"
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = findProperty('sonatypeUploadUser')
+                password = findProperty('sonatypeUploadPassword')
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact tasks.sourcesJar
+            artifact tasks.javadocJar
+
+            pom {
+                name.set("jlemmagen")
+                description.set("Java implementation of open source lemmatizer based on (http://lemmatise.ijs.si/)")
+                url.set("https://github.com/vlk32/jlemmagen")
+                licenses {
+                    license {
+                        name.set("Apache License 2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("hlavki")
+                        name.set("Michal Hlavac")
+                        email.set("miso@hlavki.eu")
+                    }
+                    developer {
+                        id.set("vlk32")
+                        name.set("Vladimir Kralik")
+                        email.set("vkralik@gmail.com")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:https://github.com/vlk32/jlemmagen")
+                    developerConnection.set("scm:git:https://github.com/vlk32/jlemmagen")
+                    url.set("https://github.com/vlk32/jlemmagen")
+                }
+
+            }
+        }
+    }
+}
+
+signing {
+    useGpgCmd()
+    sign configurations.archives
+}
+
+tasks.withType(PublishToMavenRepository) {
+    onlyIf {
+        versioning.info.tag && !versioning.info.dirty
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
