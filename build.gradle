@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id "net.nemerosa.versioning" version "2.12.0" apply true
+    id 'biz.aQute.bnd.builder'
 }
 
 repositories {
@@ -23,6 +24,8 @@ versioning {
 group = 'eu.hlavki.text'
 version = versioning.info.tag && !versioning.info.dirty ? versioning.info.tag : versioning.info.display
 sourceCompatibility = '1.8'
+description="JLemmaGen is java implmentation of LemmaGen project. It's open source lemmatizer with 15 prebuilted european lexicons."
+ext.license='http://www.apache.org/licenses/LICENSE-2.0.txt'
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
@@ -38,6 +41,7 @@ artifacts {
     archives sourcesJar
     archives javadocJar
 }
+
 
 publishing {
     repositories {
@@ -60,12 +64,12 @@ publishing {
 
             pom {
                 name.set("jlemmagen")
-                description.set("Java implementation of open source lemmatizer based on (http://lemmatise.ijs.si/)")
+                description.set(project.description)
                 url.set("https://github.com/hlavki/jlemmagen")
                 licenses {
                     license {
                         name.set("Apache License 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0")
+                        url.set(license)
                     }
                 }
                 developers {
@@ -101,3 +105,24 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+jar {
+    manifest {
+        attributes(
+            'Built-By'       : System.properties['user.name'],
+            'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+            'Build-Revision' : versioning.info.commit,
+            'Build-Jdk'      : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+            'Build-OS'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}",
+            'Bundle-Description' : "${project.description}",
+            'Bundle-License' : "${license}",
+            'Bundle-SymbolicName' : 'eu.hlavki.text.jlemmagen',
+            'Bundle-Name' : 'JLemmaGen',
+            'Created-By'     : "Gradle ${gradle.gradleVersion}",
+        )
+    }
+    bnd(
+        // https://bnd.bndtools.org/chapters/825-instructions-ref.html
+        // vlk : tu asi ma byt ciarka
+        '-exportcontents': 'eu.hlavki.text.lemmagen, eu.hlavki.text.lemmagen.api',
+    )
+}
